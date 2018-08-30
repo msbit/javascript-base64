@@ -1,5 +1,15 @@
-function base64Decode(input) {
-  const dictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const defaultDictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+const defaultPadding = '=';
+
+function base64Decode (input, dictionary, padding) {
+  if (dictionary === undefined) {
+    dictionary = defaultDictionary;
+  }
+
+  if (padding === undefined) {
+    padding = defaultPadding;
+  }
+
   let bytes = [];
   const split = input.split('');
   for(let i = 0; i < split.length; i += 4) {
