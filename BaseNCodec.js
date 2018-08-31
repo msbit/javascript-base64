@@ -8,16 +8,38 @@ class BaseNCodec {
     }
     this.dictionary = dictionary;
 
+    this.decodedSymbolWidth = 8;
+    this.encodedSymbolWidth = Math.log2(this.dictionary.length);
+
+    this.setStrides();
+
     if (padding === undefined) {
       padding = defaultPadding;
     }
     this.padding = padding;
   }
 
+  setStrides() {
+    let decodedLength = this.decodedSymbolWidth;
+    this.decodedStride = 1;
+    let encodedLength = this.encodedSymbolWidth;
+    this.encodedStride = 1;
+
+    while (decodedLength !== encodedLength) {
+      if (decodedLength < encodedLength) {
+        decodedLength += this.decodedSymbolWidth;
+        this.decodedStride += 1;
+      } else {
+        encodedLength += this.encodedSymbolWidth;
+        this.encodedStride += 1;
+      }
+    }
+  }
+
   decode (input) {
     let bytes = [];
     const split = input.split('');
-    for(let i = 0; i < split.length; i += 4) {
+    for (let i = 0; i < split.length; i += this.encodedStride) {
       const a = this.dictionary.indexOf(split[i + 0]);
       const b = this.dictionary.indexOf(split[i + 1]);
       const c = this.dictionary.indexOf(split[i + 2]);
@@ -46,7 +68,7 @@ class BaseNCodec {
 
   encode (input) {
     let characters = [];
-    for (let i = 0; i < input.length; i += 3) {
+    for (let i = 0; i < input.length; i += this.decodedStride) {
       const a = input[i + 0];
       const b = input[i + 1];
       const c = input[i + 2];
