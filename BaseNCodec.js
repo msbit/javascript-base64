@@ -103,6 +103,7 @@ class BaseNCodec {
       const outputD = c & 63;
       characters.push(this.dictionary[outputD]);
     }
-    return characters;
+
+    return characters.join('');
   }
 }
