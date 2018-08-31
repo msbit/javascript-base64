@@ -11,7 +11,7 @@ class BaseNCodec {
     this.decodedSymbolWidth = 8;
     this.encodedSymbolWidth = Math.log2(this.dictionary.length);
 
-    this.setStrides();
+    [this.decodedStride, this.encodedStride] = this.setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
 
     if (padding === undefined) {
       padding = defaultPadding;
@@ -19,21 +19,23 @@ class BaseNCodec {
     this.padding = padding;
   }
 
-  setStrides() {
-    let decodedLength = this.decodedSymbolWidth;
-    this.decodedStride = 1;
-    let encodedLength = this.encodedSymbolWidth;
-    this.encodedStride = 1;
+  setStrides (decodedSymbolWidth, encodedSymbolWidth) {
+    let decodedLength = decodedSymbolWidth;
+    let decodedStride = 1;
+    let encodedLength = encodedSymbolWidth;
+    let encodedStride = 1;
 
     while (decodedLength !== encodedLength) {
       if (decodedLength < encodedLength) {
-        decodedLength += this.decodedSymbolWidth;
-        this.decodedStride += 1;
+        decodedLength += decodedSymbolWidth;
+        decodedStride += 1;
       } else {
-        encodedLength += this.encodedSymbolWidth;
-        this.encodedStride += 1;
+        encodedLength += encodedSymbolWidth;
+        encodedStride += 1;
       }
     }
+
+    return [decodedStride, encodedStride];
   }
 
   decode (input) {
