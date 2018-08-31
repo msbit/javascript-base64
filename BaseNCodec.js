@@ -11,6 +11,10 @@ class BaseNCodec {
     this.decodedSymbolWidth = 8;
     this.encodedSymbolWidth = Math.log2(this.dictionary.length);
 
+    if (this.encodedSymbolWidth % 1 !== 0) {
+      throw new Error('invalid dictionary length');
+    }
+
     [this.decodedStride, this.encodedStride] = this.setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
 
     if (padding === undefined) {
