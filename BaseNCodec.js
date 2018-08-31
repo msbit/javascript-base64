@@ -45,30 +45,22 @@ class BaseNCodec {
   decode (input) {
     let bytes = [];
     const split = input.split('');
+    const mask = Math.pow(2, this.decodedSymbolWidth) - 1;
 
     for (let i = 0; i < split.length; i += this.encodedStride) {
-      const a = this.dictionary.indexOf(split[i + 0]);
-      const b = this.dictionary.indexOf(split[i + 1]);
-      const c = this.dictionary.indexOf(split[i + 2]);
-      const d = this.dictionary.indexOf(split[i + 3]);
-
-      if (a === -1 || b === -1) {
-        throw new Error('invalid input');
+      for (let j = 1; j < this.encodedStride; j++) {
+        const previousBits = j * (this.encodedSymbolWidth / this.decodedStride);
+        const currentBits = this.encodedSymbolWidth - previousBits;
+        const previous = this.dictionary.indexOf(split[i + (j - 1)]);
+        const current = this.dictionary.indexOf(split[i + j]);
+        if (current === -1) {
+          if (j * this.encodedSymbolWidth < this.decodedSymbolWidth) {
+            throw new Error('invalid input');
+          }
+          break;
+        }
+        bytes.push(((previous << previousBits) | (current >> currentBits)) & mask);
       }
-
-      bytes.push(((a << 2) | (b >> 4)) & 255);
-
-      if (c === -1) {
-        break;
-      }
-
-      bytes.push(((b << 4) | (c >> 2)) & 255);
-
-      if (d === -1) {
-        break;
-      }
-
-      bytes.push(((c << 6) | d) & 255);
     };
 
     return new Uint8Array(bytes);
