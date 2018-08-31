@@ -43,4 +43,39 @@ class BaseNCodec {
     };
     return new Uint8Array(bytes);
   }
+
+  encode (input) {
+    let characters = [];
+    for (let i = 0; i < input.length; i += 3) {
+      const a = input[i + 0];
+      const b = input[i + 1];
+      const c = input[i + 2];
+
+      const outputA = (a >> 2) & 63;
+      characters.push(this.dictionary[outputA]);
+
+      let outputB = (a << 4) & 63;
+      if (b === undefined) {
+        characters.push(this.dictionary[outputB]);
+        characters.push('=');
+        characters.push('=');
+        break;
+      }
+      outputB = outputB | ( b >> 4);
+      characters.push(this.dictionary[outputB]);
+
+      let outputC = (b << 2) & 63;
+      if (c === undefined) {
+        characters.push(this.dictionary[outputC]);
+        characters.push('=');
+        break;
+      }
+      outputC = outputC | (c >> 6);
+      characters.push(this.dictionary[outputC]);
+
+      const outputD = c & 63;
+      characters.push(this.dictionary[outputD]);
+    }
+    return characters;
+  }
 }
