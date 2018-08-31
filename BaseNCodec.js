@@ -41,6 +41,7 @@ class BaseNCodec {
   decode (input) {
     let bytes = [];
     const split = input.split('');
+
     for (let i = 0; i < split.length; i += this.encodedStride) {
       const a = this.dictionary.indexOf(split[i + 0]);
       const b = this.dictionary.indexOf(split[i + 1]);
@@ -65,11 +66,13 @@ class BaseNCodec {
 
       bytes.push(((c << 6) | d) & 255);
     };
+
     return new Uint8Array(bytes);
   }
 
   encode (input) {
     let characters = [];
+
     for (let i = 0; i < input.length; i += this.decodedStride) {
       const a = input[i + 0];
       const b = input[i + 1];
