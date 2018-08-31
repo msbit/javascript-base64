@@ -57,8 +57,8 @@ class BaseNCodec {
       let outputB = (a << 4) & 63;
       if (b === undefined) {
         characters.push(this.dictionary[outputB]);
-        characters.push('=');
-        characters.push('=');
+        characters.push(this.padding);
+        characters.push(this.padding);
         break;
       }
       outputB = outputB | ( b >> 4);
@@ -67,7 +67,7 @@ class BaseNCodec {
       let outputC = (b << 2) & 63;
       if (c === undefined) {
         characters.push(this.dictionary[outputC]);
-        characters.push('=');
+        characters.push(this.padding);
         break;
       }
       outputC = outputC | (c >> 6);
