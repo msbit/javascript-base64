@@ -43,7 +43,7 @@ class BaseNCodec {
   }
 
   decode (input) {
-    let bytes = [];
+    const bytes = [];
     const split = input.split('');
     const mask = Math.pow(2, this.decodedSymbolWidth) - 1;
 
@@ -61,13 +61,13 @@ class BaseNCodec {
         }
         bytes.push(((previous << previousBits) | (current >> currentBits)) & mask);
       }
-    };
+    }
 
     return new Uint8Array(bytes);
   }
 
   encode (input) {
-    let characters = [];
+    const characters = [];
 
     for (let i = 0; i < input.length; i += this.decodedStride) {
       const a = input[i + 0];
@@ -84,7 +84,7 @@ class BaseNCodec {
         characters.push(this.padding);
         break;
       }
-      outputB = outputB | ( b >> 4);
+      outputB = outputB | (b >> 4);
       characters.push(this.dictionary[outputB]);
 
       let outputC = (b << 2) & 63;
