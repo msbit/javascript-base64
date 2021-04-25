@@ -21,10 +21,7 @@ const setStrides = (decodedSymbolWidth, encodedSymbolWidth) => {
 };
 
 export class BaseNCodec {
-  constructor (dictionary, padding) {
-    if (dictionary === undefined) {
-      dictionary = defaultDictionary;
-    }
+  constructor (dictionary = defaultDictionary, padding = defaultPadding) {
     this.dictionary = dictionary;
 
     this.decodedSymbolWidth = 8;
@@ -36,9 +33,6 @@ export class BaseNCodec {
 
     [this.decodedStride, this.encodedStride] = setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
 
-    if (padding === undefined) {
-      padding = defaultPadding;
-    }
     this.padding = padding;
   }
 
