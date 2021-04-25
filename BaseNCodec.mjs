@@ -1,7 +1,7 @@
 const defaultDictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const defaultPadding = '=';
 
-const setStrides = (decodedSymbolWidth, encodedSymbolWidth) => {
+const strides = (decodedSymbolWidth, encodedSymbolWidth) => {
   let decodedLength = decodedSymbolWidth;
   let decodedStride = 1;
   let encodedLength = encodedSymbolWidth;
@@ -31,7 +31,7 @@ export class BaseNCodec {
       throw new Error('invalid dictionary length');
     }
 
-    [this.decodedStride, this.encodedStride] = setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
+    [this.decodedStride, this.encodedStride] = strides(this.decodedSymbolWidth, this.encodedSymbolWidth);
 
     this.padding = padding;
   }
