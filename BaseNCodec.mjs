@@ -1,7 +1,26 @@
 const defaultDictionary = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 const defaultPadding = '=';
 
-class BaseNCodec {
+const setStrides = (decodedSymbolWidth, encodedSymbolWidth) => {
+  let decodedLength = decodedSymbolWidth;
+  let decodedStride = 1;
+  let encodedLength = encodedSymbolWidth;
+  let encodedStride = 1;
+
+  while (decodedLength !== encodedLength) {
+    if (decodedLength < encodedLength) {
+      decodedLength += decodedSymbolWidth;
+      decodedStride += 1;
+    } else {
+      encodedLength += encodedSymbolWidth;
+      encodedStride += 1;
+    }
+  }
+
+  return [decodedStride, encodedStride];
+};
+
+export class BaseNCodec {
   constructor (dictionary, padding) {
     if (dictionary === undefined) {
       dictionary = defaultDictionary;
@@ -15,31 +34,12 @@ class BaseNCodec {
       throw new Error('invalid dictionary length');
     }
 
-    [this.decodedStride, this.encodedStride] = this.setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
+    [this.decodedStride, this.encodedStride] = setStrides(this.decodedSymbolWidth, this.encodedSymbolWidth);
 
     if (padding === undefined) {
       padding = defaultPadding;
     }
     this.padding = padding;
-  }
-
-  setStrides (decodedSymbolWidth, encodedSymbolWidth) {
-    let decodedLength = decodedSymbolWidth;
-    let decodedStride = 1;
-    let encodedLength = encodedSymbolWidth;
-    let encodedStride = 1;
-
-    while (decodedLength !== encodedLength) {
-      if (decodedLength < encodedLength) {
-        decodedLength += decodedSymbolWidth;
-        decodedStride += 1;
-      } else {
-        encodedLength += encodedSymbolWidth;
-        encodedStride += 1;
-      }
-    }
-
-    return [decodedStride, encodedStride];
   }
 
   decode (input) {
